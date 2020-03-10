@@ -29,7 +29,7 @@ function start() {
         .prompt({
             name: "view",
             type: "list",
-            message: "What would you like to list?",
+            message: "What would you like to do?",
             choices: ["View departments", "View roles", "View employees", "Add departments", "Add roles", "Add employees", "EXIT"]
         })
         .then(function (answer) {
@@ -57,16 +57,28 @@ function start() {
 }
 
 function viewDepart(){
-
-}
+    connection.query("SELECT * FROM department;", function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        start();
+    });
+};
 
 function viewRole(){
-
-}
+    connection.query("SELECT * FROM role;", function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        start();
+    });
+};
 
 function viewEmp(){
-
-}
+    connection.query("SELECT * FROM employee;", function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        start();
+    });
+};
 
 function addDepart(){
 
