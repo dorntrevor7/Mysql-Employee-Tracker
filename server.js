@@ -56,7 +56,7 @@ function start() {
         });
 }
 
-function viewDepart(){
+function viewDepart() {
     connection.query("SELECT * FROM department;", function (err, data) {
         if (err) throw err;
         console.table(data);
@@ -64,7 +64,7 @@ function viewDepart(){
     });
 };
 
-function viewRole(){
+function viewRole() {
     connection.query("SELECT * FROM role;", function (err, data) {
         if (err) throw err;
         console.table(data);
@@ -72,7 +72,7 @@ function viewRole(){
     });
 };
 
-function viewEmp(){
+function viewEmp() {
     connection.query("SELECT * FROM employee;", function (err, data) {
         if (err) throw err;
         console.table(data);
@@ -80,14 +80,43 @@ function viewEmp(){
     });
 };
 
-function addDepart(){
+function addDepart() {
+    console.log("hello")
+    inquirer
+        .prompt([
+            {
+                name: "id",
+                type: "input",
+                message: "What do you want the department ID to be?"
+            },
+            {
+                name: "name",
+                type: "input",
+                message: "What is the name of the department?"
+            }
+        ])
+        .then(function (answer) {
+            // when finished prompting, insert a new department into the db with that info
+            connection.query(
+                "INSERT INTO department SET ?",
+                {
+                    id: answer.id,
+                    name: answer.name
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your department was created successfully!");
+                    // re-prompt the user for if they want to bid or post
+                    start();
+                }
+            );
+        });
+}
+
+function addRole() {
 
 }
 
-function addRole(){
-
-}
-
-function addEmp(){
+function addEmp() {
 
 }
