@@ -81,7 +81,7 @@ function viewEmp() {
 };
 
 function addDepart() {
-    console.log("hello")
+    // Prompting to add a department
     inquirer
         .prompt([
             {
@@ -106,7 +106,7 @@ function addDepart() {
                 function (err) {
                     if (err) throw err;
                     console.log("Your department was created successfully!");
-                    // re-prompt the user for if they want to bid or post
+                    // re-prompt the user for if they want to view, add, or update
                     start();
                 }
             );
@@ -114,7 +114,48 @@ function addDepart() {
 }
 
 function addRole() {
-
+    // Prompting to add a role
+    inquirer
+        .prompt([
+            {
+                name: "id",
+                type: "input",
+                message: "What do you want the department ID to be?"
+            },
+            {
+                name: "title",
+                type: "input",
+                message: "What is the title of the role?"
+            },
+            {
+                name: "salary",
+                type: "input",
+                message: "What is the salary of the role?"
+            },
+            {
+                name: "departmentID",
+                type: "input",
+                message: "What is the department ID of the role?"
+            }
+        ])
+        .then(function (answer) {
+            // when finished prompting, insert a new role into the db with that info
+            connection.query(
+                "INSERT INTO role SET ?",
+                {
+                    id: answer.id,
+                    title: answer.title,
+                    salary: answer.salary,
+                    department_id: answer.departmentID
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your role was created successfully!");
+                    // re-prompt the user for if they want to view, add, or update
+                    start();
+                }
+            );
+        });
 }
 
 function addEmp() {
