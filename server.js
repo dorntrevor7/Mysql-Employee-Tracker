@@ -1,6 +1,7 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
@@ -30,7 +31,7 @@ function start() {
             name: "view",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View departments", "View roles", "View employees", "Add departments", "Add roles", "Add employees", "EXIT"]
+            choices: ["View departments", "View roles", "View employees", "Add department", "Add role", "Add employee", "Update", "EXIT"]
         })
         .then(function (answer) {
             if (answer.view === "View departments") {
@@ -42,14 +43,17 @@ function start() {
             else if (answer.view === "View employees") {
                 viewEmp();
             }
-            else if (answer.view === "Add departments") {
+            else if (answer.view === "Add department") {
                 addDepart();
             }
-            else if (answer.view === "Add roles") {
+            else if (answer.view === "Add role") {
                 addRole();
             }
-            else if (answer.view === "Add employees") {
+            else if (answer.view === "Add employee") {
                 addEmp();
+            }
+            else if (answer.view === "Update") {
+                update();
             } else {
                 connection.end();
             }
@@ -159,5 +163,133 @@ function addRole() {
 }
 
 function addEmp() {
+    // Prompting to add a role
+    inquirer
+        .prompt([
+            {
+                name: "id",
+                type: "input",
+                message: "What is the new employees ID?"
+            },
+            {
+                name: "firstname",
+                type: "input",
+                message: "What is the first name of the employee?"
+            },
+            {
+                name: "lastname",
+                type: "input",
+                message: "What is the last name of the employee?"
+            },
+            {
+                name: "roleID",
+                type: "input",
+                message: "What is the the role ID of the employee?"
+            },
+            {
+                name: "managerID",
+                type: "input",
+                message: "What is the employee manager ID?"
+            }
+        ])
+        .then(function (answer) {
+            // when finished prompting, insert a new role into the db with that info
+            connection.query(
+                "INSERT INTO employee SET ?",
+                {
+                    id: answer.id,
+                    first_name: answer.firstname,
+                    last_name: answer.lastname,
+                    role_id: answer.roleID,
+                    manager_id: answer.managerID
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your role was created successfully!");
+                    // re-prompt the user for if they want to view, add, or update
+                    start();
+                }
+            );
+        });
+};
+
+function update() {
+    inquirer
+        .prompt([
+            {
+                name: "update",
+                type: "list",
+                message: "What would you like to update?",
+                choices: ["Departments", "Roles", "Employees", "EXIT"]
+            },
+        ]).then(function (answer) {
+
+            if (answer.update === "Departments") {
+                updateDepart();
+            }
+            else if (answer.update === "Roles") {
+                updateRole();
+            }
+            else if (answer.update === "Employees") {
+                updateEmp();
+            } else {
+                connection.end();
+            }
+        });
+};
+
+function updateDepart() {
+    // query the database for 
+    connection.query("SELECT * FROM department", function (err, results) {
+        if (err) throw err;
+        // once you have the items, prompt the user for which they'd like to bid on
+        inquirer
+            .prompt([
+                {
+                    name: "choice",
+                    type: "rawlist",
+                    message: "What would like to update?",
+                    choices: function () {
+                        var choiceArray = [];
+                        for (var i = 0; i < results.length; i++) {
+                            choiceArray.push(
+                                results[i].name
+                            );
+                        }
+                        return choiceArray;
+                    }
+                },
+            ]).then(function (answers) {
+                var chosenUpdate;
+                for (var i = 0; i < results.length; i++) {
+                    if (results[i].name === answers.choice) {
+                        chosenUpdate = results[i];
+                    }
+                }
+                connection.query(
+                    "UPDATE department SET ? WHERE ?",
+                    [
+                        {
+                            name: answers.name
+                        },
+                        {
+                            id: chosenUpdate.id
+                        }
+                    ],
+                    function (error) {
+                        if (error) throw err;
+                        console.log("Bid placed successfully!");
+                    }
+                );
+                start();
+            });
+    });
+}
+
+function updateRole() {
+
+}
+
+function updateEmp() {
 
 }
