@@ -15,3 +15,4 @@ The following picture is representing the terminal window thats diplayed:
 
 ![SC of terminal using the app](imgs/sc-mysql-emp.png)
 
+Here's the link to the video of the terminal: [Employee Generator](https://drive.google.com/file/d/11lYs_vcgykZvZmZd7pp5oor9YHsyVEjQ/view?usp=sharing)
