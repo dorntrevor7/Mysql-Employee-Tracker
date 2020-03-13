@@ -31,7 +31,7 @@ function start() {
             name: "view",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View departments", "View roles", "View employees", "Add department", "Add role", "Add employee", "Update", "EXIT"]
+            choices: ["View departments", "View roles", "View employees", "Add department", "Add role", "Add employee", "Update employee", "EXIT"]
         })
         .then(function (answer) {
             if (answer.view === "View departments") {
@@ -52,8 +52,8 @@ function start() {
             else if (answer.view === "Add employee") {
                 addEmp();
             }
-            else if (answer.view === "Update") {
-                update();
+            else if (answer.view === "Update employee") {
+                updateEmployee();
             } else {
                 connection.end();
             }
@@ -213,34 +213,34 @@ function addEmp() {
         });
 };
 
-function update() {
-    inquirer
-        .prompt([
-            {
-                name: "update",
-                type: "list",
-                message: "What would you like to update?",
-                choices: ["Departments", "Roles", "Employees", "EXIT"]
-            },
-        ]).then(function (answer) {
+// function update() {
+//     inquirer
+//         .prompt([
+//             {
+//                 name: "update",
+//                 type: "list",
+//                 message: "What would you like to update?",
+//                 choices: ["Departments", "Roles", "Employees", "EXIT"]
+//             },
+//         ]).then(function (answer) {
 
-            if (answer.update === "Departments") {
-                updateDepart();
-            }
-            else if (answer.update === "Roles") {
-                updateRole();
-            }
-            else if (answer.update === "Employees") {
-                updateEmp();
-            } else {
-                connection.end();
-            }
-        });
-};
+//             if (answer.update === "Departments") {
+//                 updateDepart();
+//             }
+//             else if (answer.update === "Roles") {
+//                 updateRole();
+//             }
+//             else if (answer.update === "Employees") {
+//                 updateEmp();
+//             } else {
+//                 connection.end();
+//             }
+//         });
+// };
 
-function updateDepart() {
+function updateEmployee() {
     // query the database for 
-    connection.query("SELECT * FROM department", function (err, results) {
+    connection.query("SELECT * FROM employee", function (err, results) {
         if (err) throw err;
         // once you have the items, prompt the user for which they'd like to bid on
         inquirer
@@ -248,17 +248,20 @@ function updateDepart() {
                 {
                     name: "choice",
                     type: "rawlist",
-                    message: "What would like to update?",
                     choices: function () {
                         var choiceArray = [];
                         for (var i = 0; i < results.length; i++) {
-                            choiceArray.push(
-                                results[i].name
-                            );
+                            choiceArray.push(results[i].name);
                         }
                         return choiceArray;
-                    }
+                    },
+                    message: "What would like to update?"
                 },
+                {
+                    name: "bid",
+                    type: "input",
+                    message: "What do you want to update it to?"
+                }
             ]).then(function (answers) {
                 var chosenUpdate;
                 for (var i = 0; i < results.length; i++) {
@@ -266,11 +269,12 @@ function updateDepart() {
                         chosenUpdate = results[i];
                     }
                 }
+
                 connection.query(
-                    "UPDATE department SET ? WHERE ?",
+                    "UPDATE FROM employee SET ? WHERE ?",
                     [
                         {
-                            name: answers.name
+                            name: answers.bid
                         },
                         {
                             id: chosenUpdate.id
