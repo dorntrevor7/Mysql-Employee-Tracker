@@ -10,7 +10,7 @@ I want to make new departments, roles, and employees for
 my business and etc to manage throughout my busy day.
 ```
 
-The following picture is representing the terminal window thats diplayed:
+The following video is representing the terminal window thats diplayed:
 
 ![Video of terminal using the app](./imgs/mysqlemployeeFinal.gif)
 
